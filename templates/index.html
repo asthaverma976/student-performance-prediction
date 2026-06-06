@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Predict student academic performance using machine learning. Enter study habits, attendance, and more to get an instant prediction.">
+    <title>Student Performance Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <header class="header fade-in">
+            <div class="header__icon">🎓</div>
+            <h1 class="header__title">Student Performance Predictor</h1>
+            <p class="header__subtitle">AI-powered academic performance prediction</p>
+        </header>
+
+        <!-- Prediction Form -->
+        <div class="card fade-in-up">
+            <form action="/predict" method="POST" id="prediction-form">
+                <div class="form-grid">
+
+                    <!-- Study Hours -->
+                    <div class="form-group">
+                        <label for="study_hours">Study Hours (per day)</label>
+                        <input type="number" id="study_hours" name="study_hours"
+                               min="0" max="12" step="0.1" value="6"
+                               placeholder="0 – 12" required>
+                    </div>
+
+                    <!-- Attendance -->
+                    <div class="form-group">
+                        <label for="attendance_percentage">Attendance (%)</label>
+                        <input type="number" id="attendance_percentage" name="attendance_percentage"
+                               min="0" max="100" step="0.1" value="80"
+                               placeholder="0 – 100" required>
+                    </div>
+
+                    <!-- Previous Scores -->
+                    <div class="form-group">
+                        <label for="previous_scores">Previous Scores</label>
+                        <input type="number" id="previous_scores" name="previous_scores"
+                               min="0" max="100" step="0.1" value="70"
+                               placeholder="0 – 100" required>
+                    </div>
+
+                    <!-- Sleep Hours -->
+                    <div class="form-group">
+                        <label for="sleep_hours">Sleep Hours</label>
+                        <input type="number" id="sleep_hours" name="sleep_hours"
+                               min="4" max="10" step="0.1" value="7"
+                               placeholder="4 – 10" required>
+                    </div>
+
+                    <!-- Extracurricular Activities -->
+                    <div class="form-group">
+                        <label for="extracurricular_activities">Extracurricular Activities</label>
+                        <select id="extracurricular_activities" name="extracurricular_activities" required>
+                            <option value="1" selected>Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+
+                    <!-- Parent Education Level -->
+                    <div class="form-group">
+                        <label for="parent_education_level">Parent Education Level</label>
+                        <select id="parent_education_level" name="parent_education_level" required>
+                            <option value="0">None</option>
+                            <option value="1">High School</option>
+                            <option value="2" selected>Bachelor's</option>
+                            <option value="3">Master's</option>
+                            <option value="4">Doctorate</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn-predict" id="btn-predict">
+                    ✨ Predict Performance
+                </button>
+            </form>
+        </div>
+
+        <footer class="footer fade-in">
+            Built with Flask &amp; Scikit-learn &bull; Student Performance Prediction System
+        </footer>
+    </div>
+
+    <script>
+        // Micro-interaction: button ripple on click
+        document.getElementById('btn-predict').addEventListener('click', function(e) {
+            const btn = this;
+            btn.style.transform = 'scale(0.97)';
+            setTimeout(() => { btn.style.transform = ''; }, 150);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your student performance prediction result — see predicted score, category, and confidence.">
+    <title>Prediction Result — Student Performance Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <header class="header fade-in">
+            <div class="header__icon">📊</div>
+            <h1 class="header__title">Prediction Result</h1>
+            <p class="header__subtitle">AI analysis of student performance</p>
+        </header>
+
+        <!-- Result Card -->
+        <div class="card result-card fade-in-up">
+
+            <!-- Score Display -->
+            <div class="score-display">
+                <div class="score-value" id="score-value">{{ score }}</div>
+                <div class="score-label">Predicted Score (out of 100)</div>
+            </div>
+
+            <!-- Gauge Bar -->
+            <div class="gauge-container">
+                <div class="gauge-bar">
+                    <div class="gauge-fill" id="gauge-fill" style="width: 0%;"></div>
+                </div>
+                <div class="gauge-labels">
+                    <span>0</span>
+                    <span>25</span>
+                    <span>50</span>
+                    <span>75</span>
+                    <span>100</span>
+                </div>
+            </div>
+
+            <!-- Category Badge -->
+            {% set cat_lower = category | lower %}
+            <div class="category-badge category-badge--{{ cat_lower }}">
+                {% if cat_lower == 'excellent' %}🌟{% elif cat_lower == 'good' %}👍{% elif cat_lower == 'average' %}📝{% else %}⚠️{% endif %}
+                {{ category }}
+            </div>
+
+            <!-- Confidence -->
+            <div class="confidence-row">
+                <span class="confidence-dot"></span>
+                Confidence: <strong>{{ confidence }}</strong>
+            </div>
+
+            <!-- Input Summary -->
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-item__value">{{ inputs.study_hours }}h</div>
+                    <div class="detail-item__label">Study Hours</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item__value">{{ inputs.attendance_percentage }}%</div>
+                    <div class="detail-item__label">Attendance</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item__value">{{ inputs.previous_scores }}</div>
+                    <div class="detail-item__label">Prev. Score</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item__value">{{ inputs.sleep_hours }}h</div>
+                    <div class="detail-item__label">Sleep</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item__value">{% if inputs.extracurricular_activities | int %}Yes{% else %}No{% endif %}</div>
+                    <div class="detail-item__label">Extracurricular</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item__value">Level {{ inputs.parent_education_level }}</div>
+                    <div class="detail-item__label">Parent Edu.</div>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <a href="/" class="btn-back" id="btn-back">← Make Another Prediction</a>
+        </div>
+
+        <footer class="footer fade-in">
+            Built with Flask &amp; Scikit-learn &bull; Student Performance Prediction System
+        </footer>
+    </div>
+
+    <script>
+        // Animate gauge fill on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const score = parseFloat('{{ score }}');
+            const gaugeFill = document.getElementById('gauge-fill');
+
+            // Small delay for the animation to be visible
+            setTimeout(function() {
+                gaugeFill.style.width = Math.min(score, 100) + '%';
+            }, 300);
+        });
+
+        // Animate score counter
+        (function() {
+            const target = parseFloat('{{ score }}');
+            const el = document.getElementById('score-value');
+            const duration = 1200;
+            const startTime = performance.now();
+
+            function tick(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Ease-out cubic
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = (eased * target).toFixed(1);
+
+                if (progress < 1) {
+                    requestAnimationFrame(tick);
+                } else {
+                    el.textContent = target.toFixed(1);
+                }
+            }
+            requestAnimationFrame(tick);
+        })();
+    </script>
+</body>
+</html>
